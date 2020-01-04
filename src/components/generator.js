@@ -68,11 +68,15 @@ export default class Generator extends React.Component {
     super(props);
 
     this.state = {
-      item: this.getNewItem(""),
-      thing: this.getNewThing(""),
-      color: this.getNewColor(""),
-      stroke: this.getNewColor("")
+      item: null,
+      thing: null,
+      color: "FFFFFF",
+      stroke: "FFFFFF"
     }
+  }
+
+  componentDidMount() {
+    this.regenerate();
   }
 
   regenerate() {
@@ -118,16 +122,20 @@ export default class Generator extends React.Component {
 
     return (
       <Container color={color}>
-        <TextWrapper>
-          <p>{`${item} but for ${thing}`}</p>
-        </TextWrapper>
-        <GoButton
-          color={color}
-          stroke={stroke}
-          onClick={this.regenerate.bind(this)}
-        >
-          Let's Go
-        </GoButton>
+        {item &&
+          <>
+            <TextWrapper>
+              <p>{`${item} but for ${thing}`}</p>
+            </TextWrapper>
+            <GoButton
+              color={color}
+              stroke={stroke}
+              onClick={this.regenerate.bind(this)}
+            >
+              Let's Go
+            </GoButton>
+          </>
+        }
       </Container>
     );
   }
