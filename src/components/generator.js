@@ -61,6 +61,8 @@ const GoButton = styled.button`
   &:hover {
     cursor: pointer;
   }
+
+  -webkit-tap-highlight-color: transparent;
 `;
 
 export default class Generator extends React.Component {
