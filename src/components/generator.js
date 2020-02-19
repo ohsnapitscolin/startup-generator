@@ -1,6 +1,8 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import styled from "styled-components";
 import { responsive } from "../utils/style";
+import { Promos } from "../utils/icons";
+import Promo1 from "../svg/promo_1.svg";
 
 const Container = styled.div`
   height: 100%;
@@ -14,7 +16,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #${p => p.color};
+  color: ${p => p.color};
   background-color: black;
 `;
 
@@ -53,7 +55,7 @@ const GoButton = styled.button`
   font-size: 16px;
   font-weight: 500;
 
-  background-color: #${p => p.color};
+  background-color: ${p => p.color};
   width: 250px;
   height: 55px;
   border-radius: 50px;
@@ -65,6 +67,32 @@ const GoButton = styled.button`
   -webkit-tap-highlight-color: transparent;
 `;
 
+const PromoWrapper = styled.div`
+  position: relative;
+
+  svg {
+    path,
+    g {
+      stroke: ${p => p.color};
+    }
+  }
+`;
+
+const PromoPercentOff = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  transform: translate(-50%, -50%);
+  h1 {
+    margin: 0;
+  }
+`;
+
 export default class Generator extends React.Component {
   constructor(props) {
     super(props);
@@ -72,9 +100,11 @@ export default class Generator extends React.Component {
     this.state = {
       item: null,
       thing: null,
-      color: "FFFFFF",
-      stroke: "FFFFFF"
-    }
+      color: "#FFFFFF",
+      stroke: "#FFFFFF",
+      promoIndex: -1,
+      percentOff: 0,
+    };
   }
 
   componentDidMount() {
@@ -87,11 +117,16 @@ export default class Generator extends React.Component {
     const newThing = this.getNewThing(this.state.thing);
     const stroke = this.getNewColor(newColor);
 
+    const promoIndex = this.getPromoIndex();
+    const percentOff = this.getPercentOff();
+
     this.setState({
       item: newItem,
       thing: newThing,
       color: newColor,
-      stroke: stroke
+      stroke: stroke,
+      promoIndex: promoIndex,
+      percentOff: percentOff,
     });
   }
 
@@ -115,16 +150,41 @@ export default class Generator extends React.Component {
       copiedArray.splice(currentIndex, 1);
     }
 
-    const newIndex =  Math.floor(Math.random() * copiedArray.length);
+    const newIndex = Math.floor(Math.random() * copiedArray.length);
     return copiedArray[newIndex];
   }
 
+  getPromoIndex() {
+    return Math.floor(Math.random() * Promos.length * 2);
+  }
+
+  getPercentOff() {
+    return Math.floor(Math.random() * 100) + 1;
+  }
+
+  renderPromoCode(color, index, percentOff) {
+    if (index >= Promos.length) {
+      return null;
+    }
+
+    const Icon = Promos[index];
+    return (
+      <PromoWrapper color={color}>
+        <Icon color={color} />
+        <PromoPercentOff>
+          <h1>{percentOff}%</h1>
+          <h1>OFFFF</h1>
+        </PromoPercentOff>
+      </PromoWrapper>
+    );
+  }
+
   render() {
-    const { item, thing, color, stroke } = this.state;
+    const { item, thing, color, stroke, promoIndex, percentOff } = this.state;
 
     return (
       <Container color={color}>
-        {item &&
+        {item && (
           <>
             <TextWrapper>
               <p>{`${item} but for ${thing}`}</p>
@@ -136,8 +196,9 @@ export default class Generator extends React.Component {
             >
               Let's Go
             </GoButton>
+            {this.renderPromoCode(color, promoIndex, percentOff)}
           </>
-        }
+        )}
       </Container>
     );
   }
