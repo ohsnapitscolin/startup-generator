@@ -1,6 +1,8 @@
-import React from "react"
-import styled from "styled-components"
+import React from "react";
+import styled from "styled-components";
 import { responsive } from "../utils/style";
+
+import Promo from "./promo";
 
 const Container = styled.div`
   height: 100%;
@@ -14,7 +16,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
 
-  color: #${p => p.color};
+  color: ${p => p.color};
   background-color: black;
 `;
 
@@ -28,9 +30,12 @@ const TextWrapper = styled.div`
     flex-direction: row;
   `}
 
-  font-size: 48px;
+  font-size: 40px;
+  line-height: 40px;
   ${responsive.sm`
-    font-size: 64px;
+    font-size: 62px;
+    letter-spacing: 1px;
+    line-height: 62px;
   `}
 
   p {
@@ -38,7 +43,10 @@ const TextWrapper = styled.div`
     margin: 0;
   }
 
-  margin-bottom: 48px;
+  margin-bottom: 32px;
+  ${responsive.sm`
+    margin-bottom: 48px;
+  `}
 `;
 
 const GoButton = styled.button`
@@ -50,11 +58,12 @@ const GoButton = styled.button`
 
   text-transform: uppercase;
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
+  letter-spacing: 0.75px;
 
-  background-color: #${p => p.color};
-  width: 250px;
+  background-color: ${p => p.color};
+  width: 225px;
   height: 55px;
   border-radius: 50px;
 
@@ -63,6 +72,7 @@ const GoButton = styled.button`
   }
 
   -webkit-tap-highlight-color: transparent;
+  z-index: 1;
 `;
 
 export default class Generator extends React.Component {
@@ -72,9 +82,11 @@ export default class Generator extends React.Component {
     this.state = {
       item: null,
       thing: null,
-      color: "FFFFFF",
-      stroke: "FFFFFF"
-    }
+      color: "#FFFFFF",
+      stroke: "#FFFFFF",
+    };
+
+    this.promoCode = null;
   }
 
   componentDidMount() {
@@ -87,11 +99,15 @@ export default class Generator extends React.Component {
     const newThing = this.getNewThing(this.state.thing);
     const stroke = this.getNewColor(newColor);
 
+    if (this.promoCode) {
+      this.promoCode.regenerate();
+    }
+
     this.setState({
       item: newItem,
       thing: newThing,
       color: newColor,
-      stroke: stroke
+      stroke: stroke,
     });
   }
 
@@ -115,7 +131,7 @@ export default class Generator extends React.Component {
       copiedArray.splice(currentIndex, 1);
     }
 
-    const newIndex =  Math.floor(Math.random() * copiedArray.length);
+    const newIndex = Math.floor(Math.random() * copiedArray.length);
     return copiedArray[newIndex];
   }
 
@@ -124,7 +140,7 @@ export default class Generator extends React.Component {
 
     return (
       <Container color={color}>
-        {item &&
+        {item && (
           <>
             <TextWrapper>
               <p>{`${item} but for ${thing}`}</p>
@@ -136,8 +152,9 @@ export default class Generator extends React.Component {
             >
               Let's Go
             </GoButton>
+            <Promo ref={r => (this.promoCode = r)} color={color} />
           </>
-        }
+        )}
       </Container>
     );
   }
