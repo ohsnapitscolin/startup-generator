@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { responsive } from "../utils/style";
-import { Promos } from "../utils/icons";
-import Promo1 from "../svg/promo_1.svg";
+
+import Promo from "./promo";
 
 const Container = styled.div`
   height: 100%;
@@ -67,32 +67,6 @@ const GoButton = styled.button`
   -webkit-tap-highlight-color: transparent;
 `;
 
-const PromoWrapper = styled.div`
-  position: relative;
-
-  svg {
-    path,
-    g {
-      stroke: ${p => p.color};
-    }
-  }
-`;
-
-const PromoPercentOff = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  transform: translate(-50%, -50%);
-  h1 {
-    margin: 0;
-  }
-`;
-
 export default class Generator extends React.Component {
   constructor(props) {
     super(props);
@@ -102,9 +76,9 @@ export default class Generator extends React.Component {
       thing: null,
       color: "#FFFFFF",
       stroke: "#FFFFFF",
-      promoIndex: -1,
-      percentOff: 0,
     };
+
+    this.promoCode = null;
   }
 
   componentDidMount() {
@@ -117,16 +91,15 @@ export default class Generator extends React.Component {
     const newThing = this.getNewThing(this.state.thing);
     const stroke = this.getNewColor(newColor);
 
-    const promoIndex = this.getPromoIndex();
-    const percentOff = this.getPercentOff();
+    if (this.promoCode) {
+      this.promoCode.regenerate();
+    }
 
     this.setState({
       item: newItem,
       thing: newThing,
       color: newColor,
       stroke: stroke,
-      promoIndex: promoIndex,
-      percentOff: percentOff,
     });
   }
 
@@ -154,33 +127,8 @@ export default class Generator extends React.Component {
     return copiedArray[newIndex];
   }
 
-  getPromoIndex() {
-    return Math.floor(Math.random() * Promos.length * 2);
-  }
-
-  getPercentOff() {
-    return Math.floor(Math.random() * 100) + 1;
-  }
-
-  renderPromoCode(color, index, percentOff) {
-    if (index >= Promos.length) {
-      return null;
-    }
-
-    const Icon = Promos[index];
-    return (
-      <PromoWrapper color={color}>
-        <Icon color={color} />
-        <PromoPercentOff>
-          <h1>{percentOff}%</h1>
-          <h1>OFFFF</h1>
-        </PromoPercentOff>
-      </PromoWrapper>
-    );
-  }
-
   render() {
-    const { item, thing, color, stroke, promoIndex, percentOff } = this.state;
+    const { item, thing, color, stroke } = this.state;
 
     return (
       <Container color={color}>
@@ -196,7 +144,7 @@ export default class Generator extends React.Component {
             >
               Let's Go
             </GoButton>
-            {this.renderPromoCode(color, promoIndex, percentOff)}
+            <Promo ref={r => (this.promoCode = r)} color={color} />
           </>
         )}
       </Container>
