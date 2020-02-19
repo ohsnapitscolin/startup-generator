@@ -30,9 +30,12 @@ const TextWrapper = styled.div`
     flex-direction: row;
   `}
 
-  font-size: 48px;
+  font-size: 40px;
+  line-height: 40px;
   ${responsive.sm`
-    font-size: 64px;
+    font-size: 62px;
+    letter-spacing: 1px;
+    line-height: 62px;
   `}
 
   p {
@@ -40,7 +43,10 @@ const TextWrapper = styled.div`
     margin: 0;
   }
 
-  margin-bottom: 48px;
+  margin-bottom: 32px;
+  ${responsive.sm`
+    margin-bottom: 48px;
+  `}
 `;
 
 const GoButton = styled.button`
@@ -52,11 +58,12 @@ const GoButton = styled.button`
 
   text-transform: uppercase;
 
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
+  letter-spacing: 0.75px;
 
   background-color: ${p => p.color};
-  width: 250px;
+  width: 225px;
   height: 55px;
   border-radius: 50px;
 
@@ -65,6 +72,7 @@ const GoButton = styled.button`
   }
 
   -webkit-tap-highlight-color: transparent;
+  z-index: 1;
 `;
 
 export default class Generator extends React.Component {
